@@ -2,6 +2,9 @@
   <mat-toolbar class="transparent-header">
     <span>Reportes de Actividad del Sistema</span>
     <span class="spacer"></span>
+    <small *ngIf="ultimaActualizacion" class="last-update">
+      Actualizado: {{ ultimaActualizacion | date: 'shortTime' }}
+    </small>
     <button mat-stroked-button color="primary" (click)="cargarReporte()" [disabled]="cargando">
       <mat-icon>refresh</mat-icon>
       Actualizar

@@ -47,6 +47,7 @@ export class AuditLogComponent implements OnInit {
   cargando = false;
   error = '';
   total = 0;
+  ultimaActualizacion: Date | null = null;
 
   filtroTabla = '';
   filtroOperacion = '';
@@ -71,6 +72,7 @@ export class AuditLogComponent implements OnInit {
           this.logs = response.items ?? [];
           this.total = response.total ?? this.logs.length;
           this.cargando = false;
+          this.ultimaActualizacion = new Date();
         },
         error: (err) => {
           this.logs = [];

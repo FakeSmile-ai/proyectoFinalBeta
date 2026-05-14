@@ -2,6 +2,12 @@
   padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
+  color: #e7eefc;
+}
+
+.last-update {
+  margin-right: 12px;
+  color: #95a3c2;
 }
 
 .transparent-header {
@@ -18,8 +24,10 @@
 .minimal-card {
   padding: 0;
   overflow: hidden;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #21304a;
   box-shadow: none;
+  border-radius: 16px;
+  background: #121c2f;
 }
 
 table {
@@ -38,8 +46,8 @@ th.mat-mdc-header-cell {
   display: inline-block;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #eef2ff;
-  color: #1a237e;
+  background: #1b2840;
+  color: #89a8ff;
   font-weight: 600;
   font-size: 12px;
 }

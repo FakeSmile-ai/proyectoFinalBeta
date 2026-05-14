@@ -101,3 +101,32 @@ pre {
     grid-template-columns: 1fr;
   }
 }
+.page-container {
+  color: #e7eefc;
+}
+
+.last-update {
+  margin-right: 12px;
+  color: #95a3c2;
+}
+
+.minimal-card {
+  border-color: #21304a;
+  background: #121c2f;
+}
+
+.table-summary {
+  background: #0f1829;
+  border-bottom: 1px solid #21304a;
+}
+
+.operation-chip {
+  background: #1b2840;
+  color: #89a8ff;
+}
+
+.json-box pre {
+  background: #0f1829;
+  border: 1px solid #21304a;
+  color: #e7eefc;
+}

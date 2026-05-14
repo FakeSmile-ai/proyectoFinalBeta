@@ -30,6 +30,7 @@ export class ReportesActividadComponent implements OnInit {
   dataSource: ActividadItem[] = [];
   cargando = false;
   error = '';
+  ultimaActualizacion: Date | null = null;
 
   ngOnInit(): void {
     this.cargarReporte();
@@ -43,6 +44,7 @@ export class ReportesActividadComponent implements OnInit {
       next: (response) => {
         this.dataSource = response.items ?? [];
         this.cargando = false;
+        this.ultimaActualizacion = new Date();
       },
       error: (err) => {
         this.dataSource = [];
