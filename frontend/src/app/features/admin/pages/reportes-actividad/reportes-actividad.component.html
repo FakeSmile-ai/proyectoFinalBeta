@@ -1,0 +1,57 @@
+<div class="page-container">
+  <mat-toolbar class="transparent-header">
+    <span>Reportes de Actividad del Sistema</span>
+    <span class="spacer"></span>
+    <button mat-stroked-button color="primary" (click)="cargarReporte()" [disabled]="cargando">
+      <mat-icon>refresh</mat-icon>
+      Actualizar
+    </button>
+    <button mat-stroked-button color="primary" (click)="imprimirReporte()">
+      <mat-icon>print</mat-icon>
+      Imprimir
+    </button>
+  </mat-toolbar>
+
+  <div *ngIf="cargando" class="estado-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando reporte...</p>
+  </div>
+
+  <div *ngIf="error && !cargando" class="estado-container error-text">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <mat-card class="minimal-card" *ngIf="!cargando && !error">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+      <ng-container matColumnDef="tabla_afectada">
+        <th mat-header-cell *matHeaderCellDef>Tabla afectada</th>
+        <td mat-cell *matCellDef="let element">{{ element.tabla_afectada }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="operacion">
+        <th mat-header-cell *matHeaderCellDef>Operación</th>
+        <td mat-cell *matCellDef="let element">
+          <span class="operation-chip">{{ element.operacion }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="total_eventos">
+        <th mat-header-cell *matHeaderCellDef>Total eventos</th>
+        <td mat-cell *matCellDef="let element">{{ element.total_eventos }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ultimo_evento">
+        <th mat-header-cell *matHeaderCellDef>Último evento</th>
+        <td mat-cell *matCellDef="let element">{{ element.ultimo_evento | date: 'short' }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnasMostrar"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasMostrar"></tr>
+    </table>
+
+    <div *ngIf="dataSource.length === 0" class="empty-state">
+      No hay actividad registrada en la bitácora.
+    </div>
+  </mat-card>
+</div>

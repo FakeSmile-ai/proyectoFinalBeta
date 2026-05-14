@@ -1,0 +1,48 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" opened class="sidenav">
+    <div class="sidenav-header">
+      <mat-icon class="logo-icon">sports_soccer</mat-icon>
+      <h2>Mundial 2026</h2>
+      <p>Panel Admin</p>
+    </div>
+
+    <mat-nav-list>
+      <a mat-list-item routerLink="/admin/dashboard" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <div matListItemTitle>Dashboard Global</div>
+      </a>
+
+      <a mat-list-item routerLink="/admin/reportes" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>assessment</mat-icon>
+        <div matListItemTitle>Reportes</div>
+      </a>
+
+      <a mat-list-item routerLink="/admin/auditoria" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>security</mat-icon>
+        <div matListItemTitle>Auditoría</div>
+      </a>
+
+      <a mat-list-item routerLink="/premios/liga/1" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>emoji_events</mat-icon>
+        <div matListItemTitle>Premios Liga #1</div>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="top-toolbar">
+      <button mat-icon-button (click)="sidenav.toggle()" aria-label="Abrir menú">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>{{ title }}</span>
+      <span class="spacer"></span>
+      <button mat-icon-button aria-label="Usuario">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

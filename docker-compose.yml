@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:15
+    container_name: db_mundial
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: pronosticos_futbol
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pronosticos_futbol"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  pgdata:

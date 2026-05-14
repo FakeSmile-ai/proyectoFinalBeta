@@ -1,0 +1,86 @@
+<div class="dashboard-container">
+  <mat-toolbar class="transparent-header">
+    <span>Panel Global Administrativo</span>
+    <span class="spacer"></span>
+    <button mat-stroked-button color="primary" (click)="cargarDashboard()" [disabled]="cargando">
+      <mat-icon>refresh</mat-icon>
+      Actualizar
+    </button>
+  </mat-toolbar>
+
+  <div *ngIf="cargando" class="estado-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando datos...</p>
+  </div>
+
+  <div *ngIf="error && !cargando" class="estado-container error-text">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="dashboard && !cargando" class="dashboard-grid">
+    <mat-card class="minimal-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="primary">people</mat-icon>
+        <mat-card-subtitle>Usuarios</mat-card-subtitle>
+        <mat-card-title>{{ dashboard.total_usuarios }}</mat-card-title>
+      </mat-card-header>
+    </mat-card>
+
+    <mat-card class="minimal-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="primary">emoji_events</mat-icon>
+        <mat-card-subtitle>Ligas totales</mat-card-subtitle>
+        <mat-card-title>{{ dashboard.total_ligas }}</mat-card-title>
+      </mat-card-header>
+    </mat-card>
+
+    <mat-card class="minimal-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="primary">paid</mat-icon>
+        <mat-card-subtitle>Ligas de apuesta</mat-card-subtitle>
+        <mat-card-title>{{ dashboard.ligas_apuesta }}</mat-card-title>
+      </mat-card-header>
+    </mat-card>
+
+    <mat-card class="minimal-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="primary">sports_esports</mat-icon>
+        <mat-card-subtitle>Ligas de diversión</mat-card-subtitle>
+        <mat-card-title>{{ dashboard.ligas_diversion }}</mat-card-title>
+      </mat-card-header>
+    </mat-card>
+
+    <mat-card class="minimal-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="accent">workspace_premium</mat-icon>
+        <mat-card-subtitle>Premios activos</mat-card-subtitle>
+        <mat-card-title>{{ dashboard.premios_activos }}</mat-card-title>
+      </mat-card-header>
+    </mat-card>
+
+    <mat-card class="minimal-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="accent">payments</mat-icon>
+        <mat-card-subtitle>Total recaudado</mat-card-subtitle>
+        <mat-card-title>Q {{ dashboard.total_recaudado_global | number: '1.2-2' }}</mat-card-title>
+      </mat-card-header>
+    </mat-card>
+
+    <mat-card class="minimal-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="accent">account_balance</mat-icon>
+        <mat-card-subtitle>Comisión global</mat-card-subtitle>
+        <mat-card-title>Q {{ dashboard.comision_global | number: '1.2-2' }}</mat-card-title>
+      </mat-card-header>
+    </mat-card>
+
+    <mat-card class="minimal-card highlight-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="primary">account_balance_wallet</mat-icon>
+        <mat-card-subtitle>Fondo global para premios</mat-card-subtitle>
+        <mat-card-title class="large-text">Q {{ dashboard.fondo_global | number: '1.2-2' }}</mat-card-title>
+      </mat-card-header>
+    </mat-card>
+  </div>
+</div>

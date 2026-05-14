@@ -1,0 +1,112 @@
+<div class="page-container">
+  <mat-toolbar class="transparent-header">
+    <span>Bitácora de auditoría</span>
+    <span class="spacer"></span>
+    <button mat-stroked-button color="primary" (click)="cargarAuditoria()" [disabled]="cargando">
+      <mat-icon>refresh</mat-icon>
+      Actualizar
+    </button>
+  </mat-toolbar>
+
+  <mat-card class="minimal-card filters-card">
+    <div class="filters-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Tabla afectada</mat-label>
+        <input matInput [(ngModel)]="filtroTabla" placeholder="Ej. premio, liga" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Operación</mat-label>
+        <mat-select [(ngModel)]="filtroOperacion">
+          <mat-option value="">Todas</mat-option>
+          <mat-option value="INSERT">INSERT</mat-option>
+          <mat-option value="UPDATE">UPDATE</mat-option>
+          <mat-option value="DELETE">DELETE</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Límite</mat-label>
+        <input matInput type="number" [(ngModel)]="limite" min="1" max="200" />
+      </mat-form-field>
+
+      <div class="filter-actions">
+        <button mat-flat-button color="primary" (click)="cargarAuditoria()" [disabled]="cargando">
+          Buscar
+        </button>
+        <button mat-button type="button" (click)="limpiarFiltros()" [disabled]="cargando">
+          Limpiar
+        </button>
+      </div>
+    </div>
+  </mat-card>
+
+  <div *ngIf="cargando" class="estado-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando bitácora...</p>
+  </div>
+
+  <div *ngIf="error && !cargando" class="estado-container error-text">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+
+  <mat-card class="minimal-card table-card" *ngIf="!cargando && !error">
+    <div class="table-summary">
+      Registros encontrados: <strong>{{ total }}</strong>
+    </div>
+
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="logs" class="mat-elevation-z0">
+        <ng-container matColumnDef="fecha_evento">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let log">{{ log.fecha_evento | date: 'short' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tabla_afectada">
+          <th mat-header-cell *matHeaderCellDef>Tabla</th>
+          <td mat-cell *matCellDef="let log">{{ log.tabla_afectada }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="operacion">
+          <th mat-header-cell *matHeaderCellDef>Operación</th>
+          <td mat-cell *matCellDef="let log">
+            <span class="operation-chip">{{ log.operacion }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="id_registro">
+          <th mat-header-cell *matHeaderCellDef>ID registro</th>
+          <td mat-cell *matCellDef="let log">{{ log.id_registro ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="usuario_bd">
+          <th mat-header-cell *matHeaderCellDef>Usuario BD</th>
+          <td mat-cell *matCellDef="let log">{{ log.usuario_bd }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="datos">
+          <th mat-header-cell *matHeaderCellDef>Cambios</th>
+          <td mat-cell *matCellDef="let log">
+            <details>
+              <summary>Ver datos</summary>
+              <div class="json-box">
+                <strong>Antes</strong>
+                <pre>{{ formatearJson(log.datos_anteriores) }}</pre>
+                <strong>Después</strong>
+                <pre>{{ formatearJson(log.datos_nuevos) }}</pre>
+              </div>
+            </details>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnasMostrar"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasMostrar"></tr>
+      </table>
+
+      <div *ngIf="logs.length === 0" class="empty-state">
+        No hay registros de auditoría para mostrar.
+      </div>
+    </div>
+  </mat-card>
+</div>

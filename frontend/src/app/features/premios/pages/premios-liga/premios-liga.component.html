@@ -1,0 +1,129 @@
+<div class="page-container">
+  <mat-toolbar class="transparent-header">
+    <button mat-icon-button (click)="regresar()" color="primary" aria-label="Regresar">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>Detalle de Premios: {{ nombreLiga }}</span>
+    <span class="spacer"></span>
+
+    <button mat-stroked-button color="primary" (click)="obtenerDatos()" [disabled]="cargando || !idLiga">
+      <mat-icon>refresh</mat-icon>
+      Actualizar
+    </button>
+
+    <button mat-flat-button color="warn" (click)="ejecutarCierre()" [disabled]="cargando || !idLiga">
+      <mat-icon>gavel</mat-icon>
+      Ejecutar cierre
+    </button>
+  </mat-toolbar>
+
+  <div *ngIf="cargando" class="estado-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Conectando con el motor de premios...</p>
+  </div>
+
+  <div *ngIf="error && !cargando" class="estado-container error-text">
+    <mat-icon>info</mat-icon>
+    <h2>No se encontraron premios cerrados</h2>
+    <p>{{ error }}</p>
+    <button mat-flat-button color="primary" (click)="ejecutarCierre()" [disabled]="!idLiga">
+      Calcular premios ahora
+    </button>
+  </div>
+
+  <div class="dashboard-grid" *ngIf="datosCierre && !cargando">
+    <mat-card class="minimal-card highlight-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="primary">monetization_on</mat-icon>
+        <mat-card-subtitle>Pozo total recaudado</mat-card-subtitle>
+        <mat-card-title class="large-text">
+          Q {{ datosCierre.cierre.total_recaudado | number: '1.2-2' }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="info-grid">
+        <div>
+          <span>Comisión plataforma</span>
+          <strong>Q {{ datosCierre.cierre.comision | number: '1.2-2' }}</strong>
+        </div>
+        <div>
+          <span>Fondo global</span>
+          <strong>Q {{ datosCierre.cierre.fondo_global | number: '1.2-2' }}</strong>
+        </div>
+        <div>
+          <span>Monto neto</span>
+          <strong>Q {{ datosCierre.cierre.monto_neto | number: '1.2-2' }}</strong>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="minimal-card table-card">
+      <mat-card-header class="table-header">
+        <mat-card-title>Regla de distribución aplicada</mat-card-title>
+      </mat-card-header>
+
+      <table mat-table [dataSource]="datosCierre.distribucion">
+        <ng-container matColumnDef="posicion">
+          <th mat-header-cell *matHeaderCellDef>Posición</th>
+          <td mat-cell *matCellDef="let premio"><strong>Lugar {{ premio.posicion_final }}</strong></td>
+        </ng-container>
+
+        <ng-container matColumnDef="porcentaje">
+          <th mat-header-cell *matHeaderCellDef>Porcentaje</th>
+          <td mat-cell *matCellDef="let premio">{{ premio.porcentaje | number: '1.2-2' }}%</td>
+        </ng-container>
+
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef>Monto destinado</th>
+          <td mat-cell *matCellDef="let premio" class="monto-text">
+            Q {{ premio.monto | number: '1.2-2' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef>Descripción</th>
+          <td mat-cell *matCellDef="let premio">{{ premio.descripcion }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnasDistribucion"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasDistribucion"></tr>
+      </table>
+    </mat-card>
+
+    <mat-card class="minimal-card table-card">
+      <mat-card-header class="table-header">
+        <mat-card-title>Usuarios ganadores</mat-card-title>
+      </mat-card-header>
+
+      <table mat-table [dataSource]="datosCierre.premios">
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef>Usuario</th>
+          <td mat-cell *matCellDef="let ganador">{{ ganador.nombre_completo }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef>Tipo premio</th>
+          <td mat-cell *matCellDef="let ganador">{{ ganador.tipo_premio }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef>Monto</th>
+          <td mat-cell *matCellDef="let ganador" class="monto-text">
+            Q {{ ganador.monto | number: '1.2-2' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef>Asignación</th>
+          <td mat-cell *matCellDef="let ganador">{{ ganador.fecha_asignacion | date: 'short' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnasGanadores"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasGanadores"></tr>
+      </table>
+
+      <div *ngIf="datosCierre.premios.length === 0" class="empty-state">
+        No hay ganadores registrados.
+      </div>
+    </mat-card>
+  </div>
+</div>
