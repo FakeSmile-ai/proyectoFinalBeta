@@ -30,18 +30,10 @@ export class DashboardGlobalComponent implements OnInit, OnDestroy {
   error = '';
   ultimaActualizacion: Date | null = null;
   private requestActiva = false;
-  private autoRefreshId: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
     this.cargarDashboard();
     this.autoRefreshId = setInterval(() => this.cargarDashboard(true), 30000);
-  }
-
-  ngOnDestroy(): void {
-    if (this.autoRefreshId) {
-      clearInterval(this.autoRefreshId);
-      this.autoRefreshId = null;
-    }
   }
 
   cargarDashboard(silencioso = false): void {
