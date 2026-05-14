@@ -2,6 +2,9 @@
   <mat-toolbar class="transparent-header">
     <span>Bitácora de auditoría</span>
     <span class="spacer"></span>
+    <small *ngIf="ultimaActualizacion" class="last-update">
+      Actualizado: {{ ultimaActualizacion | date: 'shortTime' }}
+    </small>
     <button mat-stroked-button color="primary" (click)="cargarAuditoria()" [disabled]="cargando">
       <mat-icon>refresh</mat-icon>
       Actualizar

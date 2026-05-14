@@ -7,6 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActividadItem, AdminService } from '../../services/admin.service';
+import { finalize, take } from 'rxjs';
 
 @Component({
   selector: 'app-reportes-actividad',
@@ -30,6 +31,7 @@ export class ReportesActividadComponent implements OnInit {
   dataSource: ActividadItem[] = [];
   cargando = false;
   error = '';
+  ultimaActualizacion: Date | null = null;
 
   ngOnInit(): void {
     this.cargarReporte();
@@ -39,18 +41,29 @@ export class ReportesActividadComponent implements OnInit {
     this.cargando = true;
     this.error = '';
 
-    this.adminService.getReportesActividad().subscribe({
-      next: (response) => {
-        this.dataSource = response.items ?? [];
-        this.cargando = false;
-      },
-      error: (err) => {
-        this.dataSource = [];
-        this.cargando = false;
-        this.error = err?.error?.detail ?? 'No se pudo cargar el reporte de actividad.';
-        console.error('Error al cargar reportes de actividad:', err);
-      },
-    });
+    this.adminService
+      .getReportesActividad()
+      .pipe(
+        take(1),
+        finalize(() => {
+          this.cargando = false;
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          this.dataSource = Array.isArray(response)
+            ? response
+            : Array.isArray(response.items)
+              ? response.items
+              : [];
+          this.ultimaActualizacion = new Date();
+        },
+        error: (err) => {
+          this.dataSource = [];
+          this.error = err?.error?.detail ?? 'No se pudo cargar el reporte de actividad.';
+          console.error('Error al cargar reportes de actividad:', err);
+        },
+      });
   }
 
   imprimirReporte(): void {
