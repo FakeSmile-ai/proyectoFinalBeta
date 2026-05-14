@@ -2,6 +2,7 @@
   padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
+  color: #e8edf8;
 }
 
 /* Header simple */
@@ -9,6 +10,12 @@
   background: transparent;
   margin-bottom: 24px;
   padding: 0;
+  color: #f5f7ff;
+}
+
+.last-update {
+  margin-right: 12px;
+  color: #95a3c2;
 }
 
 .spacer {
@@ -24,7 +31,10 @@
 
 /* Limpieza de las tarjetas Material */
 .minimal-card {
-  padding: 8px 0; /* Un poco de respiro interno */
+  padding: 8px 0;
+  background: #121c2f;
+  border: 1px solid #21304a;
+  border-radius: 16px;
 }
 
 /* Ajustes de tipografía para verse más limpio */
@@ -38,6 +48,7 @@ mat-card-subtitle {
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  color: #8f9dbb;
 }
 
 /* Tarjeta más ancha para el fondo principal */

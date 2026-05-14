@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AdminService, DashboardGlobal } from '../../services/admin.service';
+import { finalize, retry, take, timer } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-global',
@@ -27,26 +28,43 @@ export class DashboardGlobalComponent implements OnInit {
   dashboard: DashboardGlobal | null = null;
   cargando = false;
   error = '';
+  ultimaActualizacion: Date | null = null;
+  private requestActiva = false;
 
   ngOnInit(): void {
     this.cargarDashboard();
   }
 
-  cargarDashboard(): void {
-    this.cargando = true;
-    this.error = '';
+  cargarDashboard(silencioso = false): void {
+    if (this.requestActiva) {
+      return;
+    }
 
-    this.adminService.getDashboardGlobal().subscribe({
-      next: (response) => {
-        this.dashboard = response;
-        this.cargando = false;
-      },
-      error: (err) => {
-        this.dashboard = null;
-        this.cargando = false;
-        this.error = err?.error?.detail ?? 'Hubo un problema al obtener los datos del dashboard.';
-        console.error('Error al cargar dashboard:', err);
-      },
-    });
+    if (!silencioso) {
+      this.cargando = true;
+      this.error = '';
+    }
+    this.requestActiva = true;
+
+    this.adminService
+      .getDashboardGlobal()
+      .pipe(
+        take(1),
+        retry({ count: 1, delay: () => timer(1000) }),
+        finalize(() => {
+          this.requestActiva = false;
+          this.cargando = false;
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          this.dashboard = response;
+          this.ultimaActualizacion = new Date();
+        },
+        error: (err) => {
+          this.error = err?.error?.detail ?? 'Hubo un problema al obtener los datos del dashboard.';
+          console.error('Error al cargar dashboard:', err);
+        },
+      });
   }
 }
