@@ -29,6 +29,7 @@ export class DashboardGlobalComponent implements OnInit, OnDestroy {
   error = '';
   ultimaActualizacion: Date | null = null;
   private autoRefreshId: ReturnType<typeof setInterval> | null = null;
+  private requestActiva = false;
 
   ngOnInit(): void {
     this.cargarDashboard();
@@ -43,19 +44,25 @@ export class DashboardGlobalComponent implements OnInit, OnDestroy {
   }
 
   cargarDashboard(silencioso = false): void {
+    if (this.requestActiva) {
+      return;
+    }
+
     if (!silencioso) {
       this.cargando = true;
+      this.error = '';
     }
-    this.error = '';
+    this.requestActiva = true;
 
     this.adminService.getDashboardGlobal().subscribe({
       next: (response) => {
         this.dashboard = response;
         this.cargando = false;
+        this.requestActiva = false;
         this.ultimaActualizacion = new Date();
       },
       error: (err) => {
-        this.dashboard = null;
+        this.requestActiva = false;
         this.cargando = false;
         this.error = err?.error?.detail ?? 'Hubo un problema al obtener los datos del dashboard.';
         console.error('Error al cargar dashboard:', err);
