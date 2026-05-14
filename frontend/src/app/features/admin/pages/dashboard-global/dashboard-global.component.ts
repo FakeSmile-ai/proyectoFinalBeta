@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,25 +21,38 @@ import { AdminService, DashboardGlobal } from '../../services/admin.service';
   templateUrl: './dashboard-global.component.html',
   styleUrls: ['./dashboard-global.component.css'],
 })
-export class DashboardGlobalComponent implements OnInit {
+export class DashboardGlobalComponent implements OnInit, OnDestroy {
   private readonly adminService = inject(AdminService);
 
   dashboard: DashboardGlobal | null = null;
   cargando = false;
   error = '';
+  ultimaActualizacion: Date | null = null;
+  private autoRefreshId: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
     this.cargarDashboard();
+    this.autoRefreshId = setInterval(() => this.cargarDashboard(true), 30000);
   }
 
-  cargarDashboard(): void {
-    this.cargando = true;
+  ngOnDestroy(): void {
+    if (this.autoRefreshId) {
+      clearInterval(this.autoRefreshId);
+      this.autoRefreshId = null;
+    }
+  }
+
+  cargarDashboard(silencioso = false): void {
+    if (!silencioso) {
+      this.cargando = true;
+    }
     this.error = '';
 
     this.adminService.getDashboardGlobal().subscribe({
       next: (response) => {
         this.dashboard = response;
         this.cargando = false;
+        this.ultimaActualizacion = new Date();
       },
       error: (err) => {
         this.dashboard = null;
